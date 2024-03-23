@@ -1,15 +1,15 @@
 package asia.fourtitude.interviewq.jumble.core;
 
-import java.awt.*;
 import java.io.*;
 import java.util.*;
 import java.util.List;
 import asia.fourtitude.interviewq.jumble.exception.GoodQuestionException;
 
+import asia.fourtitude.interviewq.jumble.util.Constant;
+
 
 public class JumbleEngine {
-
-    private String filePath = "/words.txt";
+    private Random random = new Random();
 
     //file reader
     private List<String> loadWordList(String filePath) {
@@ -57,10 +57,8 @@ public class JumbleEngine {
 
     private String shuffle(char[] wordArray) {
 
-        Random rand = new Random();
-
         for (int i = wordArray.length - 1; i > 0; i--) {
-            int j = rand.nextInt(i + 1);
+            int j = random.nextInt(i + 1);
             char temp = wordArray[i];
             wordArray[i] = wordArray[j];
             wordArray[j] = temp;
@@ -144,7 +142,7 @@ public class JumbleEngine {
          * Refer to the method's Javadoc (above) and implement accordingly.
          * Must pass the corresponding unit tests.
          */
-        List<String> wordList = this.loadWordList(filePath);
+        List<String> wordList = this.loadWordList(Constant.FILE_PATH);
         Collections.shuffle(wordList);
 
         if(length == null) {
@@ -153,8 +151,6 @@ public class JumbleEngine {
 
         for (String word : wordList) {
             if (word.length() == length) {
-                System.out.printf("length=" + length);
-                System.out.printf("word.length()=" + length);
                 return word;
             }
         }
@@ -186,7 +182,7 @@ public class JumbleEngine {
         String lowercaseWord = word.toLowerCase();
         lowercaseWord = lowercaseWord.trim();
 
-        List<String> wordList = this.loadWordList(filePath);
+        List<String> wordList = this.loadWordList(Constant.FILE_PATH);
         for (String wordTemp : wordList) {
             if (wordTemp.equalsIgnoreCase(lowercaseWord)) {
                 return true;
@@ -216,17 +212,15 @@ public class JumbleEngine {
          * Refer to the method's Javadoc (above) and implement accordingly.
          * Must pass the corresponding unit tests.
          */
-        List<String> wordList = this.loadWordList(filePath);
+        List<String> wordList = this.loadWordList(Constant.FILE_PATH);
         List<String> wordsMatchingPrefixList = new ArrayList<>();
 
-        if(prefix!= null) {
-            if (isValidPrefix(prefix.trim())) {
-                String lowercasePrefix = prefix.toLowerCase();
-                lowercasePrefix = lowercasePrefix.trim();
-                for (String word : wordList) {
-                    if (word.toLowerCase().startsWith(lowercasePrefix)) {
-                        wordsMatchingPrefixList.add(word);
-                    }
+        if(prefix!= null && isValidPrefix(prefix.trim())) {
+            String lowercasePrefix = prefix.toLowerCase();
+            lowercasePrefix = lowercasePrefix.trim();
+            for (String word : wordList) {
+                if (word.toLowerCase().startsWith(lowercasePrefix)) {
+                    wordsMatchingPrefixList.add(word);
                 }
             }
         }
@@ -266,7 +260,7 @@ public class JumbleEngine {
             return new ArrayList<>();
         }
 
-        List<String> wordList = loadWordList(filePath);
+        List<String> wordList = loadWordList(Constant.FILE_PATH);
         List<String> matchingWords = new ArrayList<>();
 
         if (startChar == null) {

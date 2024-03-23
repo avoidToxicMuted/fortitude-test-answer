@@ -6,7 +6,6 @@ import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -21,6 +20,8 @@ import asia.fourtitude.interviewq.jumble.model.PrefixForm;
 import asia.fourtitude.interviewq.jumble.model.ScrambleForm;
 import asia.fourtitude.interviewq.jumble.model.SearchForm;
 import asia.fourtitude.interviewq.jumble.model.SubWordsForm;
+
+import static asia.fourtitude.interviewq.jumble.util.Constant.BLANK_ERROR_MSG;
 
 @Controller
 @RequestMapping(path = "/")
@@ -48,20 +49,15 @@ public class RootController {
 
     @PostMapping("scramble")
     public String doPostScramble(@ModelAttribute(name = "form") ScrambleForm form, BindingResult bindingResult, Model model) {
-        /*
-         * TODO:
-         * a) Validate the input `form`
-         * b) To call JumbleEngine#scramble()
-         * c) Presentation page to show the result
-         * d) Must pass the corresponding unit tests
-         */
 
         String scrambleResult = "";
 
         if (form.getWord().isEmpty()) {
             scrambleResult = "Word must not be blank";
+            LOG.error(scrambleResult);
         } else if (form.getWord().length() < 3 || form.getWord().length() > 30) {
             scrambleResult = "Word size must be between 3 and 30";
+            LOG.error(scrambleResult);
         } else {
             scrambleResult = jumbleEngine.scramble(form.getWord());
         }
@@ -83,17 +79,12 @@ public class RootController {
 
     @PostMapping("exists")
     public String doPostExists(@ModelAttribute(name = "form") ExistsForm form, BindingResult bindingResult, Model model) {
-        /*
-         * TODO:
-         * a) Validate the input `form`
-         * b) To call JumbleEngine#exists()
-         * c) Presentation page to show the result
-         * d) Must pass the corresponding unit tests
-         */
+
         boolean exists = false;
 
         if (form.getWord().isEmpty()) {
-            form.setWord("must not be blank");
+            form.setWord(BLANK_ERROR_MSG);
+            LOG.error(BLANK_ERROR_MSG);
         } else {
                 exists = jumbleEngine.exists(form.getWord());
         }
@@ -109,18 +100,12 @@ public class RootController {
 
     @PostMapping("prefix")
     public String doPostPrefix(@ModelAttribute(name = "form") PrefixForm form, BindingResult bindingResult, Model model) {
-        /*
-         * TODO:
-         * a) Validate the input `form`
-         * b) To call JumbleEngine#wordsMatchingPrefix()
-         * c) Presentation page to show the result
-         * d) Must pass the corresponding unit tests
-         */
 
         Collection<String> matchedWord = new ArrayList<>();
 
         if (form.getPrefix().isEmpty()) {
-            form.setPrefix("must not be blank");
+            form.setPrefix(BLANK_ERROR_MSG);
+            LOG.error(BLANK_ERROR_MSG);
         } else {
             matchedWord = jumbleEngine.wordsMatchingPrefix(form.getPrefix());
         }
@@ -137,19 +122,11 @@ public class RootController {
 
     @PostMapping("search")
     public String doPostSearch(@ModelAttribute(name = "form") SearchForm form, BindingResult bindingResult, Model model) {
-        /*
-         * TODO:
-         * a) Validate the input `form`
-         * b) Show the fields error accordingly: "Invalid startChar", "Invalid endChar", "Invalid length".
-         * c) To call JumbleEngine#searchWords()
-         * d) Presentation page to show the result
-         * e) Must pass the corresponding unit tests
-         */
 
         char start = '\0';
         char end = '\0';
 
-        Collection<String> searchResult = new ArrayList<>();
+        Collection<String> searchResult;
         if(form.getStartChar() != null && !form.getStartChar().isEmpty()) {
             start = form.getStartChar().charAt(0);
         }
@@ -175,13 +152,6 @@ public class RootController {
     public String doPostSubWords(
             @ModelAttribute(name = "form") SubWordsForm form,
             BindingResult bindingResult, Model model) {
-        /*
-         * TODO:
-         * a) Validate the input `form`
-         * b) To call JumbleEngine#generateSubWords()
-         * c) Presentation page to show the result
-         * d) Must pass the corresponding unit tests
-         */
 
         return "subWords";
     }
